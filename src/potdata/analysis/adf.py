@@ -3,6 +3,7 @@
 from collections.abc import Iterable
 
 import numpy as np
+import pandas as pd
 from ase import Atoms
 from ase.geometry.analysis import Analysis
 from ase.neighborlist import build_neighbor_list
@@ -108,19 +109,15 @@ class ADF:
 
         return self.angles, self.adf
 
-    @staticmethod
-    def _normalize(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    def save_data(self, filename: str = "adf.json"):
         """
-        Normalize the quantity y such that the integral of y over x is 1.
+        Save the ADF data to a file.
 
         Args:
-            x: x values to normalize y over. Shape (N,).
-            y: y values to normalize. Shape (N,).
+            filename: Name of the file to save the ADF data.
         """
-        area = np.trapz(y, x)
-        normalized_y = y / area
-
-        return normalized_y
+        df = pd.DataFrame({"angles": self.angles, "adf": self.adf})
+        df.to_json(filename)
 
     def plot(self, filename="adf.pdf", save=True, show=False):
         """
@@ -146,6 +143,20 @@ class ADF:
         if show:
             plt.show()
 
+    @staticmethod
+    def _normalize(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+        """
+        Normalize the quantity y such that the integral of y over x is 1.
+
+        Args:
+            x: x values to normalize y over. Shape (N,).
+            y: y values to normalize. Shape (N,).
+        """
+        area = np.trapz(y, x)
+        normalized_y = y / area
+
+        return normalized_y
+
 
 if __name__ == "__main__":
     from ase.build import bulk
@@ -158,6 +169,7 @@ if __name__ == "__main__":
     # resulting Na-Cl-Na angles should be at 90 and 180 degrees.
     adf = ADF(atoms)
     adf.compute(rmax=3, elements=("Na", "Cl", "Na"), angle_in_degree=True)
+    adf.save_data("adf.json")
 
     # adf.plot()
     # from ase.visualize import view
