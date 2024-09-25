@@ -1,7 +1,4 @@
-"""
-Compute the radial distribution function (RDF) of a configuration or a trajectory
-of configurations.
-"""
+"""Compute the radial distribution function (RDF) of one or more configurations."""
 
 from collections.abc import Iterable
 
@@ -42,13 +39,15 @@ class RDF:
         self, rmax: float = 5.0, nbins: int = 100, elements=None, **kwargs
     ) -> tuple[np.ndarray, np.ndarray]:
         """
+        Get the RDF.
+
         Args:
             rmax: Maximum distance to consider for the RDF calculation.
             nbins: Number of bins to use for the RDF calculation.
             elements: Elements to consider for the RDF calculation. This allows for the
                 calculation of the RDF for specific element pairs. If None, all elements
-                are considered. See ase.geometry.analysis.Analysis.get_rdf for more info.
-            kwargs: Additional arguments passed to ase.geometry.analysis.Analysis.get_rdf.
+                are considered. See ase.geometry.analysis.Analysis.get_rdf for more.
+            kwargs: Additional arguments to ase.geometry.analysis.Analysis.get_rdf.
 
         Returns:
             dist: 1D distance array for the RDF calculation.
